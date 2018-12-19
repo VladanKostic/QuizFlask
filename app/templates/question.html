@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Question:</h1>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.question_id_category.label }}<br>
+            {{ form.question_id_category() }}
+        <ul>
+            {% for error in form.question_id_category.errors %}
+            <li> style="color:red;">{{ error }}</li>
+            {% endfor %}
+        </ul>
+        </p>
+        <p>
+            {{ form.question_text.label }}<br>
+            {{ form.question_text }}<br>
+            {% for error in form.question_text.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}

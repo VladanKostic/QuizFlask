@@ -31,7 +31,28 @@ class Visitor(UserMixin,db.Model):
     def check_password( self, password ):
         return check_password_hash(self.password, password)
 
-
 @login.user_loader
 def load_user(id_visitor):
     return Visitor.query.get(int(id_visitor))
+
+class Category(db.Model):
+    id_category = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(256), index=True)
+    explanation = db.Column(db.String(512), index=True)
+
+def choice_query_category():
+    return Category.query.all()
+
+class Question(db.Model):
+    id_question = db.Column(db.Integer, primary_key=True)
+    question_id_category = db.Column(db.Integer, db.ForeignKey('category.id_category'))
+    question_text = db.Column(db.String(256))
+    num_question_in_game = db.Column(db.Integer)
+
+def choice_query_to_answer():
+    return Question.query.all()
+
+class Answer(db.Model):
+    id_answer = db.Column(db.Integer, primary_key=True)
+    answer_id_question = db.Column(db.Integer, db.ForeignKey('question.id_question'))
+    answer_text = db.Column(db.String(256))

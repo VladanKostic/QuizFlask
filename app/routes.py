@@ -1,9 +1,9 @@
 from app import app, db
-from app.forms import LoginForm, RegistrationForm
+from app.forms import LoginForm, RegistrationForm, CategoryForm, QuestionForm, AnswerForm
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
-from app.models import Visitor
+from app.models import Visitor, Category, Question, Answer
 
 @app.route('/')
 @app.route('/index')
@@ -12,14 +12,13 @@ def index():
     """
         Ovo je  View funkcija za potrebe realizacije aplikativne rute /index.
         """
-    return render_template('index.html', title='Home')
+    if current_user.is_authenticated:
+        user = Visitor.query.filter_by(username=current_user.username).first()
+    return render_template('index.html', title='Home', user=user)
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """
-        Ovo je  View funkcija za potrebe realizacije aplikativne rute /index.
-        """
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = LoginForm()
@@ -32,7 +31,8 @@ def login():
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
-        return redirect(next_page)
+        #return redirect(next_page, user=user)
+        return render_template('index.html', user=user)
     return render_template('login.html', title='Sign In', form=form)
 
 @app.route('/logout')
@@ -53,3 +53,43 @@ def register():
         flash('Congratulations on registering for the quiz!')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
+
+
+@app.route('/category', methods=['GET', 'POST'])
+def category():
+    if current_user.is_authenticated:
+        user = Visitor.query.filter_by(username=current_user.username).first()
+    form=CategoryForm()
+    if form.validate_on_submit():
+        category = Category(name=form.name.data, explanation=form.explanation.data)
+        db.session.add(category)
+        db.session.commit()
+        flash('You are add new category on the quiz!')
+        return render_template('index.html', user=user)
+    return render_template('category.html', title='Category', form=form)
+
+@app.route('/question', methods=['GET', 'POST'])
+def question():
+    if current_user.is_authenticated:
+        user = Visitor.query.filter_by(username=current_user.username).first()
+    form=QuestionForm()
+    if form.validate_on_submit():
+        question = Question(question_id_category=form.question_id_category.data.id_category, question_text=form.question_text.data, num_question_in_game=0)
+        db.session.add(question)
+        db.session.commit()
+        flash('You are add new question on the quiz!')
+        return render_template('index.html', user=user)
+    return render_template('question.html', title='Question', form=form)
+
+@app.route('/answer', methods=['GET', 'POST'])
+def answer():
+    if current_user.is_authenticated:
+        user = Visitor.query.filter_by(username=current_user.username).first()
+    form=AnswerForm()
+    if form.validate_on_submit():
+        answer = Answer(answer_id_question=form.answer_id_question.data.id_question, answer_text=form.answer_text.data)
+        db.session.add(answer)
+        db.session.commit()
+        flash('You are add new answer on the question!')
+        return render_template('index.html', user=user)
+    return render_template('answer.html', title='Answer', form=form)
