@@ -56,3 +56,8 @@ class Answer(db.Model):
     id_answer = db.Column(db.Integer, primary_key=True)
     answer_id_question = db.Column(db.Integer, db.ForeignKey('question.id_question'))
     answer_text = db.Column(db.String(256))
+
+class DummyAnswer(db.Model):
+    id_dummy_answer = db.Column(db.Integer, primary_key=True)
+    dummyanswer_id_question = db.Column(db.Integer, db.ForeignKey('question.id_question'))
+    dummy_answer_text =  db.Column(db.String(256))

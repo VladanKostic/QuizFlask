@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, SelectField, PasswordField, BooleanField, SubmitField, validators
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from wtforms_alchemy.fields import QuerySelectField
-from app.models import Visitor, Category, Question, Answer
+from app.models import Visitor, Category, Question, Answer, DummyAnswer
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -17,7 +17,7 @@ class RegistrationForm(FlaskForm):
     adresa_mesto = StringField('Place:', validators=[DataRequired()])
     adresa_ulica_broj = StringField('Street and number:', validators=[DataRequired()])
     email = StringField('Email:', validators=[DataRequired()])
-    visitor_type_id_type_visitor = SelectField('Type of visitor', choices=[('1', 'Visitor'),('2', 'Admin')], validators=[DataRequired()])
+    visitor_type_id_type_visitor = SelectField('Type of visitor', choices=[('1', 'Player'),('2', 'Admin')], validators=[DataRequired()])
     username = StringField('Username:', validators=[DataRequired()])
     password = PasswordField('Password:', validators=[DataRequired()])
     password2 = PasswordField('Repeat the password:', validators=[DataRequired(), EqualTo('password')])
@@ -46,3 +46,15 @@ class AnswerForm(FlaskForm):
     answer_id_question = QuerySelectField('The answer belongs to the query:', query_factory=choice_query_to_answer, get_label='question_text', allow_blank=False)
     answer_text = StringField('Text answer:',validators=[DataRequired()])
     submit = SubmitField('Add answer')
+
+def choice_query_to_danswer():
+    return Question.query.all()
+
+class DummyAnswerForm(FlaskForm):
+    dummyanswer_id_question = QuerySelectField('The dummy answer belongs to the query:', query_factory=choice_query_to_danswer,
+                                              get_label='question_text', allow_blank=False)
+    dummy_answer_text = StringField('Text for dummy answer:', [validators.DataRequired(), validators.Length(min=1, max=250, message=(u'Dummy answer cannot be more than 25 characters!!!'))])
+    submit = SubmitField('Add dummy answer')
+
+class NewQuizForm(FlaskForm):
+    pass

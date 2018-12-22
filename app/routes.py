@@ -1,9 +1,9 @@
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, CategoryForm, QuestionForm, AnswerForm
+from app.forms import LoginForm, RegistrationForm, CategoryForm, QuestionForm, AnswerForm, DummyAnswerForm, NewQuizForm
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
-from app.models import Visitor, Category, Question, Answer
+from app.models import Visitor, Category, Question, Answer, DummyAnswer
 
 @app.route('/')
 @app.route('/index')
@@ -93,3 +93,28 @@ def answer():
         flash('You are add new answer on the question!')
         return render_template('index.html', user=user)
     return render_template('answer.html', title='Answer', form=form)
+
+@app.route('/dummyanswer', methods=['GET', 'POST'])
+def dummyanswer():
+    if current_user.is_authenticated:
+        user = Visitor.query.filter_by(username=current_user.username).first()
+    form=DummyAnswerForm()
+    if form.validate_on_submit():
+        dummyanswer = DummyAnswer(dummyanswer_id_question=form.dummyanswer_id_question.data.id_question, dummy_answer_text=form.dummy_answer_text.data)
+        db.session.add(dummyanswer)
+        db.session.commit()
+        flash('You are add new dummy answer on the question!')
+        return render_template('index.html', user=user)
+    return render_template('dummyanswer.html', title='Dummy answer', form=form)
+
+
+@app.route('/newquiz', methods=['GET', 'POST'])
+def newquiz():
+    if current_user.is_authenticated:
+        user = Visitor.query.filter_by(username=current_user.username).first()
+    form = NewQuizForm()
+    if form.validate_on_submit():
+        selected_categories = request.form.getlist('selected_categories')
+    #categories = Category.query.filter_by(id_category = None).all()
+    categories = Category.query.all()
+    return render_template('newquiz.html', title='New quiz setup', form=form, categories=categories)

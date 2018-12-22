@@ -15,7 +15,7 @@
         </p>
         <p>
             {{ form.answer_text.label }}<br>
-            {{ form.answer_text }}<br>
+            {{ form.answer_text(size=100) }}<br>
             {% for error in form.answer_text.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}

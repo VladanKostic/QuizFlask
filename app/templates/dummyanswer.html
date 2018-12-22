@@ -1,22 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Question:</h1>
+    <h1>Dummy answer:</h1>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>
-            {{ form.question_id_category.label }}<br>
-            {{ form.question_id_category() }}
+            {{ form.dummyanswer_id_question.label }}<br>
+            {{ form.dummyanswer_id_question() }}
         <ul>
-            {% for error in form.question_id_category.errors %}
+            {% for error in form.dummyanswer_id_question.errors %}
             <li> style="color:red;">{{ error }}</li>
             {% endfor %}
         </ul>
         </p>
         <p>
-            {{ form.question_text.label }}<br>
-            {{ form.question_text(size=100) }}<br>
-            {% for error in form.question_text.errors %}
+            {{ form.dummy_answer_text.label }}<br>
+            {{ form.dummy_answer_text(size=100)}}<br>
+            {% for error in form.dummy_answer_text.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>

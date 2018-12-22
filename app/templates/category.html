@@ -13,7 +13,7 @@
         </p>
         <p>
             {{ form.explanation.label }}<br>
-            {{ form.explanation }}<br>
+            {{ form.explanation(size=100)}}<br>
             {% for error in form.explanation.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}

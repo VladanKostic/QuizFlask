@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Set new quiz:</h1>
+    <form action="" method="post" novalidate>
+                {{ form.hidden_tag() }}
+         <label>Chooce categoru form new quiz:</label><br><br>
+        <table>
+                {% if categories %}
+                {% for category in categories %}
+                    <tr>
+                        <td>
+                            {{ category.name}}
+                        </td>
+                        <td>
+                            <input type="checkbox" name="selected_categories" value={{category.id_category}}"" />
+                        </td>
+                    </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td>Not check boxes</td>>
+                </tr>
+                {% endif %}
+        </table>
+        <br><button type="submit">Choose category</button>
+    </form>
+{% endblock %}
+
