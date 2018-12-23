@@ -1,9 +1,10 @@
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, CategoryForm, QuestionForm, AnswerForm, DummyAnswerForm, NewQuizForm
+from app.forms import LoginForm, RegistrationForm, CategoryForm, QuestionForm, AnswerForm, DummyAnswerForm, NewQuizForm, NewQuizStart
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
-from app.models import Visitor, Category, Question, Answer, DummyAnswer
+from app.models import Visitor, Category, Question, Answer, DummyAnswer, Quiz, QuizDetails #, QuizShow
+import datetime
 
 @app.route('/')
 @app.route('/index')
@@ -56,6 +57,7 @@ def register():
 
 
 @app.route('/category', methods=['GET', 'POST'])
+@login_required
 def category():
     if current_user.is_authenticated:
         user = Visitor.query.filter_by(username=current_user.username).first()
@@ -69,6 +71,7 @@ def category():
     return render_template('category.html', title='Category', form=form)
 
 @app.route('/question', methods=['GET', 'POST'])
+@login_required
 def question():
     if current_user.is_authenticated:
         user = Visitor.query.filter_by(username=current_user.username).first()
@@ -82,6 +85,7 @@ def question():
     return render_template('question.html', title='Question', form=form)
 
 @app.route('/answer', methods=['GET', 'POST'])
+@login_required
 def answer():
     if current_user.is_authenticated:
         user = Visitor.query.filter_by(username=current_user.username).first()
@@ -95,12 +99,13 @@ def answer():
     return render_template('answer.html', title='Answer', form=form)
 
 @app.route('/dummyanswer', methods=['GET', 'POST'])
+@login_required
 def dummyanswer():
     if current_user.is_authenticated:
         user = Visitor.query.filter_by(username=current_user.username).first()
     form=DummyAnswerForm()
     if form.validate_on_submit():
-        dummyanswer = DummyAnswer(dummyanswer_id_question=form.dummyanswer_id_question.data.id_question, dummy_answer_text=form.dummy_answer_text.data)
+        dummyanswer = DummyAnswer(dummyanswer_id_question=form.dummyanswer_id_question.data.id_question, dummy_answer_text=form.dummy_answer_text.data, serial_number=1)
         db.session.add(dummyanswer)
         db.session.commit()
         flash('You are add new dummy answer on the question!')
@@ -109,12 +114,63 @@ def dummyanswer():
 
 
 @app.route('/newquiz', methods=['GET', 'POST'])
+@login_required
 def newquiz():
     if current_user.is_authenticated:
         user = Visitor.query.filter_by(username=current_user.username).first()
     form = NewQuizForm()
     if form.validate_on_submit():
         selected_categories = request.form.getlist('selected_categories')
-    #categories = Category.query.filter_by(id_category = None).all()
+        max_num_question = request.form.get('maxnumquestion')
+        create_time = datetime.datetime.now()
+        quiz = Quiz(id_visitor=user.id_visitor, datetime_of_create=create_time, datetime_of_start=create_time, datetime_of_end=create_time,total_question_true=0, total_question_false=0,total_score_in_percent=0)
+        db.session.add(quiz)
+        db.session.commit()
+        current_quiz =  Quiz.query.filter_by(id_visitor=user.id_visitor,datetime_of_create=create_time).first()
+        for current_category in selected_categories:
+            current_question = 1
+            for current_question in range(int(max_num_question)):
+                quizdetails = QuizDetails(id_quiz=current_quiz.id_quiz,id_category=int(current_category),id_question=1)
+                db.session.add(quizdetails)
+                db.session.commit()
+        #return render_template('newquizstart.html', title='New quiz start', form=form, current_quiz=current_quiz)
+        flash('You create new quiz!')
+        return redirect(url_for('newquizstart',current_quiz=current_quiz.id_quiz))
     categories = Category.query.all()
     return render_template('newquiz.html', title='New quiz setup', form=form, categories=categories)
+
+@app.route('/newquizstart', methods=['GET', 'POST'])
+@login_required
+def newquizstart():
+    print(request)
+    current_quiz = request.args.get('current_quiz', None)
+    if current_user.is_authenticated:
+        user = Visitor.query.filter_by(username=current_user.username).first()
+    form = NewQuizStart()
+    if form.validate_on_submit():
+        #if request.form['submmit'] == 'Start':
+        start_quiz=Quiz.query.filter_by(id_quiz=current_quiz).first()
+        startime = datetime.datetime.now()
+        start_quiz.datetime_of_start = startime
+        db.session.commit()
+        quizshow = []
+        if current_quiz != '':
+            quizshow = db.session.execute('select\
+                                                       quiz.id_quiz,\
+                                                       question.question_text,\
+                                                       (select answer_text from answer where answer_id_question = question.id_question) answer_text, 1 as answer_value,\
+                                                       (select dummy_answer_text from dummy_answer where dummyanswer_id_question = question.id_question and serial_number = 1) dummy_answer_text1, 0 as dummy_answer_value1,\
+                                                       (select dummy_answer_text from dummy_answer where dummyanswer_id_question = question.id_question and serial_number = 2) dummy_answer_text2, 0 as dummy_answer_value2,\
+                                                       (select dummy_answer_text from dummy_answer where dummyanswer_id_question = question.id_question and serial_number = 3) dummy_answer_text3, 0 as dummy_answer_value3 \
+                                                        from quiz, quiz_details , question \
+                                                        where quiz.id_quiz = :val \
+                                                        and quiz.id_quiz = quiz_details.id_quiz \
+                                                        and quiz_details.id_question = question.id_question',
+                                              {'val': current_quiz})
+            return render_template('newquizstart.html', title='New quiz start', form=form, quizshow=quizshow, startime=startime)
+        elif request.form['submit'] == 'Finish':
+            pass
+    return render_template('newquizstart.html', title='New quiz start', form=form)
+
+
+

@@ -3,8 +3,8 @@
 {% block content %}
     <h1>Set new quiz:</h1>
     <form action="" method="post" novalidate>
-                {{ form.hidden_tag() }}
-         <label>Chooce categoru form new quiz:</label><br><br>
+        {{ form.hidden_tag() }}
+        <label>Chooce category for new quiz:</label><br><br>
         <table>
                 {% if categories %}
                 {% for category in categories %}
@@ -13,7 +13,7 @@
                             {{ category.name}}
                         </td>
                         <td>
-                            <input type="checkbox" name="selected_categories" value={{category.id_category}}"" />
+                            <input type="checkbox" name="selected_categories" value={{category.id_category}} />
                         </td>
                     </tr>
                 {% endfor %}
@@ -23,7 +23,9 @@
                 </tr>
                 {% endif %}
         </table>
-        <br><button type="submit">Choose category</button>
+        <br><br>
+        <label>Chooce max number of question per category: </label><input type="text" name="maxnumquestion" size="5"><br>
+        <br><button type="submit">Set new quiz</button>
     </form>
 {% endblock %}
 

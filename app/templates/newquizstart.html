@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form action="" method="post" novalidate>
+
+        <button type="submit" value="Start" name="submit" >Start quiz </button> {{startime}}
+        <br><br><br>
+        {{ form.hidden_tag() }}
+        {% if quizshow %}
+        <table>
+
+                {% for current_quizshow in quizshow %}
+                    <tr>
+                        <td>
+                            {{ current_quizshow.question_text}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="radio" name="" value={{current_quizshow.answer_value}} /> {{current_quizshow.answer_text}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="radio" name="" value={{current_quizshow.dummy_answer_value1}} /> {{current_quizshow.dummy_answer_text1}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="radio" name="" value={{current_quizshow.dummy_answer_value2}} /> {{current_quizshow.dummy_answer_text2}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="radio" name="" value={{current_quizshow.dummy_answer_value3}} /> {{current_quizshow.dummy_answer_text3}}
+                        </td>
+                    </tr>
+                {% endfor %}
+        </table>
+        <br>
+        <br>
+        <button type="submit" value="Finish" name="submit">Finish the quiz</button>
+        {% endif %}
+    </form>
+{% endblock %}

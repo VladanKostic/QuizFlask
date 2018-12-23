@@ -54,7 +54,11 @@ class DummyAnswerForm(FlaskForm):
     dummyanswer_id_question = QuerySelectField('The dummy answer belongs to the query:', query_factory=choice_query_to_danswer,
                                               get_label='question_text', allow_blank=False)
     dummy_answer_text = StringField('Text for dummy answer:', [validators.DataRequired(), validators.Length(min=1, max=250, message=(u'Dummy answer cannot be more than 25 characters!!!'))])
+    serial_number = StringField('Add serial number for dummy answer:', validators=[DataRequired()])
     submit = SubmitField('Add dummy answer')
 
 class NewQuizForm(FlaskForm):
+    pass
+
+class NewQuizStart(FlaskForm):
     pass
