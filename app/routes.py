@@ -144,33 +144,59 @@ def newquiz():
 def newquizstart():
     print(request)
     current_quiz = request.args.get('current_quiz', None)
+
     if current_user.is_authenticated:
         user = Visitor.query.filter_by(username=current_user.username).first()
-    form = NewQuizStart()
-    if form.validate_on_submit():
-        #if request.form['submmit'] == 'Start':
-        start_quiz=Quiz.query.filter_by(id_quiz=current_quiz).first()
-        startime = datetime.datetime.now()
-        start_quiz.datetime_of_start = startime
-        db.session.commit()
-        quizshow = []
-        if current_quiz != '':
-            quizshow = db.session.execute('select\
-                                                       quiz.id_quiz,\
-                                                       question.question_text,\
-                                                       (select answer_text from answer where answer_id_question = question.id_question) answer_text, 1 as answer_value,\
-                                                       (select dummy_answer_text from dummy_answer where dummyanswer_id_question = question.id_question and serial_number = 1) dummy_answer_text1, 0 as dummy_answer_value1,\
-                                                       (select dummy_answer_text from dummy_answer where dummyanswer_id_question = question.id_question and serial_number = 2) dummy_answer_text2, 0 as dummy_answer_value2,\
-                                                       (select dummy_answer_text from dummy_answer where dummyanswer_id_question = question.id_question and serial_number = 3) dummy_answer_text3, 0 as dummy_answer_value3 \
-                                                        from quiz, quiz_details , question \
-                                                        where quiz.id_quiz = :val \
-                                                        and quiz.id_quiz = quiz_details.id_quiz \
-                                                        and quiz_details.id_question = question.id_question',
-                                              {'val': current_quiz})
-            return render_template('newquizstart.html', title='New quiz start', form=form, quizshow=quizshow, startime=startime)
-        elif request.form['submit'] == 'Finish':
-            pass
-    return render_template('newquizstart.html', title='New quiz start', form=form)
+
+    if request.method == 'GET':
+        pass
+    elif request.method == 'POST':
+        if request.form["quiz"] == "Start":
+            start_quiz=Quiz.query.filter_by(id_quiz=current_quiz).first()
+            startime = datetime.datetime.now()
+            start_quiz.datetime_of_start = startime
+            db.session.commit()
+            quizshow = []
+
+            if current_quiz != '':
+                quizshow = db.session.execute('select\
+                                                quiz.id_quiz,\
+                                                question.question_text,\
+                                                "QUI"||quiz.id_quiz||"DET"||quiz_details.id_quiz_details||"QUE"||question.id_question as radio_name,\
+                                                (select answer_text from answer where answer_id_question = question.id_question) answer_text, 1 as answer_value,\
+                                                (select dummy_answer_text from dummy_answer where dummyanswer_id_question = question.id_question and serial_number = 1) dummy_answer_text1, 0 as dummy_answer_value1,\
+                                                (select dummy_answer_text from dummy_answer where dummyanswer_id_question = question.id_question and serial_number = 2) dummy_answer_text2, 0 as dummy_answer_value2,\
+                                                (select dummy_answer_text from dummy_answer where dummyanswer_id_question = question.id_question and serial_number = 3) dummy_answer_text3, 0 as dummy_answer_value3 \
+                                                from quiz, quiz_details , question \
+                                                where quiz.id_quiz = :val \
+                                                and quiz.id_quiz = quiz_details.id_quiz \
+                                                and quiz_details.id_question = question.id_question',
+                                                {'val': current_quiz})
+                return render_template('newquizstart.html', title='New quiz start', quizshow=quizshow, startime=startime)
+        elif request.form["quiz"] == "Finish":
+            """ Setuj vreme zavrsetka i disejblus taster start """
+            finish_quiz = Quiz.query.filter_by(id_quiz=current_quiz).first()
+            print(finish_quiz)
+            endtime = datetime.datetime.now()
+            finish_quiz.datetime_of_end = endtime
+            db.session.commit()
+            """ Pokupi sva radio polja """
+            finishquizdetails = []
+            finishquizdetails = db.session.execute('select * from quiz_details where quiz_details.id_quiz = :val',{'val':finish_quiz.id_quiz})
+            print(finishquizdetails)
+            """ Prodji kroz njih u petlji """
+            for finishquizdetail in finishquizdetails:
+                """ procitaj vrednosti i upisi u quiz_details """
+                current_option = "QUI"+str(finishquizdetail.id_quiz)+"DET"+str(finishquizdetail.id_quiz_details)+"QUE"+str(finishquizdetail.id_question)
+                print(current_option)
+                option = request.form[current_option]
+                """ procitaj vrednosti i upisi u quiz_details """
+                current_row = QuizDetails.query.filter_by(id_quiz_details=finishquizdetail.id_quiz_details).first()
+                current_row.answer_true =  option
+            """ Prikazi statistiku """
+            db.session.commit()
+    return render_template('newquizstart.html', title='New quiz start')
+
 
 
 
