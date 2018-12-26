@@ -195,8 +195,38 @@ def newquizstart():
                 current_row.answer_true =  option
             """ Prikazi statistiku """
             db.session.commit()
+            start_quiz = Quiz.query.filter_by(id_quiz=current_quiz).first()
+            quizstat = db.session.execute('select count(*) as num_que, sum(answer_true) as num_true_que\
+                                                                       from quiz_details\
+                                                                       where id_quiz = :val',
+                                      {'val': current_quiz})
+            for rows in quizstat:
+                print(rows.num_true_que)
+                print(rows.num_que)
+                procenat_uspeha = (int(rows.num_true_que) * 100) / int(rows.num_que)
+            return render_template('finish.html', title='Finish quiz', user=user, procenat_uspeha=procenat_uspeha, quiz=start_quiz.id_quiz, starttime=start_quiz.datetime_of_start, endtime=endtime)
     return render_template('newquizstart.html', title='New quiz start')
 
+@app.route('/finish', methods=['GET', 'POST'])
+@login_required
+def finish():
+    if current_user.is_authenticated:
+        user = Visitor.query.filter_by(username=current_user.username).first()
+    id_quiz = request.args.get('quiz', None)
+    starttime = request.args.get('starttime', None)
+    endtime = request.args.get('endtime', None)
 
+    if id_quiz != '':
+        quiz = db.session.execute('select count(*) as num_que, sum(answer_true) as num_true_que\
+                                                           from quiz_details\
+                                                           where id_quiz = :val',
+                                  {'val': id_quiz})
+    procenat_uspeha = (quiz.num_true_que * 100) / quiz.num_que
+
+    if request.method == 'GET':
+        pass
+    elif request.method == 'POST':
+        pass
+    return render_template('finish.html', title='Finish quiz', procenat_uspeha=procenat_uspeha, starttime=starttime, endtime=endtime)
 
 

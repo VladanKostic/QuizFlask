@@ -1,5 +1,11 @@
 from flask_table import Table, Col
 
+class FinishQuiz(Table):
+    num_of_que = Col('Num of que:')
+    num_of_que = Col('Num of que:')
+    datum = Col('Datum radova:')
+    opis_radova = Col('Opis radova:')
+    iznos_radova = Col('Iznos radova:')
 
 class ResultsVoziloServis(Table):
     broj_sasije = Col('Br. sasije:', show=False)
