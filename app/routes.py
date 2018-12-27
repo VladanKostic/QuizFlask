@@ -10,13 +10,9 @@ import datetime
 @app.route('/index')
 @login_required
 def index():
-    """
-        Ovo je  View funkcija za potrebe realizacije aplikativne rute /index.
-        """
     if current_user.is_authenticated:
         user = Visitor.query.filter_by(username=current_user.username).first()
     return render_template('index.html', title='Home', user=user)
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -32,7 +28,6 @@ def login():
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
-        #return redirect(next_page, user=user)
         return render_template('index.html', user=user)
     return render_template('login.html', title='Sign In', form=form)
 
@@ -54,7 +49,6 @@ def register():
         flash('Congratulations on registering for the quiz!')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
-
 
 @app.route('/category', methods=['GET', 'POST'])
 @login_required
@@ -126,18 +120,27 @@ def newquiz():
         quiz = Quiz(id_visitor=user.id_visitor, datetime_of_create=create_time, datetime_of_start=create_time, datetime_of_end=create_time,total_question_true=0, total_question_false=0,total_score_in_percent=0)
         db.session.add(quiz)
         db.session.commit()
-        current_quiz =  Quiz.query.filter_by(id_visitor=user.id_visitor,datetime_of_create=create_time).first()
         for current_category in selected_categories:
-            current_question = 1
-            for current_question in range(int(max_num_question)):
-                quizdetails = QuizDetails(id_quiz=current_quiz.id_quiz,id_category=int(current_category),id_question=1)
+            current_num_question = 1
+            for current_num_question in range(int(max_num_question)):
+                current_id_question = get_id_question_for_category(int(current_category))
+                quizdetails = QuizDetails(id_quiz=quiz.id_quiz, id_category=int(current_category),id_question=current_id_question)
                 db.session.add(quizdetails)
                 db.session.commit()
         #return render_template('newquizstart.html', title='New quiz start', form=form, current_quiz=current_quiz)
         flash('You create new quiz!')
-        return redirect(url_for('newquizstart',current_quiz=current_quiz.id_quiz))
+        return redirect(url_for('newquizstart',current_quiz=quiz.id_quiz))
     categories = Category.query.all()
     return render_template('newquiz.html', title='New quiz setup', form=form, categories=categories)
+
+def get_id_question_for_category(p_current_category):
+     """Pitanja sa minimalnim brojem koriscenja"""
+     question = db.session.execute('select id_question,min(num_question_in_game) from question where question_id_category=:val group by question_id_category',{'val': p_current_category}).first()
+     return_id_question = question.id_question
+     queryQuestion = Question.query.filter_by(id_question=return_id_question).first()
+     queryQuestion.num_question_in_game = queryQuestion.num_question_in_game+1
+     db.session.commit()
+     return return_id_question
 
 @app.route('/newquizstart', methods=['GET', 'POST'])
 @login_required
