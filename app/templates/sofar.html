@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div>
+        <p>Hi user {{ user.first_name }}! For now your results of quiz is:</p><br>
+        <table border="" cellpadding="2" cellspacing="2">
+        {% for row in data %}
+            <tr>
+            {% for d in row %}
+                <td>{{ d }}</td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+</table>
+
+    </div>
+{%endblock %}

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>routes.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>routes.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">flash</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">url_for</span><span class="p">,</span> <span class="n">request</span>
+<span class="kn">from</span> <span class="nn">flask_login</span> <span class="kn">import</span> <span class="n">login_user</span><span class="p">,</span> <span class="n">logout_user</span><span class="p">,</span> <span class="n">current_user</span><span class="p">,</span> <span class="n">login_required</span>
+<span class="kn">from</span> <span class="nn">werkzeug.urls</span> <span class="kn">import</span> <span class="n">url_parse</span>
+<span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">app</span><span class="p">,</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">app.forms</span> <span class="kn">import</span> <span class="n">LoginForm</span><span class="p">,</span><span class="n">RegistrationForm</span><span class="p">,</span><span class="n">VoziloForm</span><span class="p">,</span><span class="n">ServisForm</span><span class="p">,</span><span class="n">VlasnistvoForm</span><span class="p">,</span><span class="n">ChoiceVozilo</span>
+<span class="kn">from</span> <span class="nn">app.forms</span> <span class="kn">import</span> <span class="n">MajstorServisPretragaForm</span><span class="p">,</span><span class="n">VoziloServisPretragaForm</span><span class="p">,</span> <span class="n">VozilaPregledForm</span>
+<span class="kn">from</span> <span class="nn">app.models</span> <span class="kn">import</span> <span class="n">Korisnik</span><span class="p">,</span><span class="n">Vozilo</span><span class="p">,</span><span class="n">Servis</span><span class="p">,</span><span class="n">Vlasnistvo</span>
+<span class="kn">from</span> <span class="nn">app.tables</span> <span class="kn">import</span> <span class="n">ResultsVoziloServis</span><span class="p">,</span> <span class="n">ResultsMajstorServis</span><span class="p">,</span> <span class="n">ResultVozila</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <h3><span id="routes-for-autoflask-application" href="routes-for-autoflask-application"> Routes for AutoFlask application </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Ovo je  View funkcija za potrebe realizacije aplikativne rute /index.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/index&#39;</span><span class="p">)</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Home&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <pre><code>Ovo je  View funkcija za potrebe realizacije aplikativne rute /index.
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/pristup&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">login</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">))</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">LoginForm</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">Korisnik</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">korisnik_login</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">username</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">check_password</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">password</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;Pogresan korisnicki nalog ili lozinka&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;pristup&#39;</span><span class="p">))</span>
+        <span class="n">login_user</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">remember</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">remember_me</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">next_page</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;next&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">next_page</span> <span class="ow">or</span> <span class="n">url_parse</span><span class="p">(</span><span class="n">next_page</span><span class="p">)</span><span class="o">.</span><span class="n">netloc</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">next_page</span> <span class="o">=</span> <span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">next_page</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;pristup.html&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Sign In&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/logout&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">logout</span><span class="p">():</span>
+    <span class="n">logout_user</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">))</span>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/register&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">register</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">))</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">RegistrationForm</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">Korisnik</span><span class="p">(</span><span class="n">ime</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">ime</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">prezime</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">prezime</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">adresa_ptt</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">adresa_ptt</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">adresa_mesto</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">adresa_mesto</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">adresa_ulica_broj</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">adresa_ulica_broj</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">korisnik_email</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">korisnik_email</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">id_korisnik_tip</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">id_korisnik_tip</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>  <span class="n">korisnik_login</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">korisnik_login</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">korisnik_pass</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">korisnik_pass</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">user</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">korisnik_pass</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;Bravo, upravo ste postali registrovani korisnik!&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;register.html&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Register&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/vozilo&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">vozilo</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">))</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">form</span> <span class="o">=</span> <span class="n">VoziloForm</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+        <span class="n">vozilo</span> <span class="o">=</span> <span class="n">Vozilo</span><span class="p">(</span><span class="n">broj_sasije</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">broj_sasije</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">marka</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">marka</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">tip</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">tip</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">vozilo</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;Bravo, upravo ste evidentirali vozilo!&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;vozilo.html&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Vozilo&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/vozilapregled&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">vozilapregled</span><span class="p">():</span>
+    <span class="n">search</span> <span class="o">=</span> <span class="n">VozilaPregledForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">search_results_vozila</span><span class="p">(</span><span class="n">search</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;vozilapregled.html&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Vozila&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">search</span><span class="p">)</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/vozilapregledrezultat&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">search_results_vozila</span><span class="p">(</span><span class="n">search</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">))</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>search_string = search.data[&lsquo;izbor_brsas&rsquo;]
+results = db.session.execute(&ldquo;select id_vozilo, broj_sasije, marka, tip from vozilo where broj_sasije like &lsquo;:val%&rsquo;;&rdquo;,{&lsquo;val&rsquo;:search_string})</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">trazim</span> <span class="o">=</span> <span class="s1">&#39;%{0}%&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">search</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;izbor_brsas&#39;</span><span class="p">])</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">Vozilo</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Vozilo</span><span class="o">.</span><span class="n">broj_sasije</span><span class="o">.</span><span class="n">like</span><span class="p">(</span><span class="n">trazim</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">results</span><span class="p">:</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;Nije pronadjen rezultat&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;vozilapregled&#39;</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">ResultVozila</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">border</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;vozilapregledrezultat.html&#39;</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/servis&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">servis</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">))</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">ServisForm</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+        <span class="n">servis</span> <span class="o">=</span> <span class="n">Servis</span><span class="p">(</span><span class="n">id_vozilo</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">id_vozilo</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">datum</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">datum</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">opis_radova</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">opis_radova</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">iznos_radova</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">iznos_radova</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">id_vlasnik</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">id_vlasnik</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">id_automehanicar</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">id_automehanicar</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">servis</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;Bravo, upravo ste evidentirali uradjeni servis na vozilu!&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;servis.html&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Servsi&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/vlasnistvo&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">vlasnistvo</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">))</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">VlasnistvoForm</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+        <span class="n">vlasnistvo</span> <span class="o">=</span> <span class="n">Vlasnistvo</span><span class="p">(</span><span class="n">id_vozilo</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">id_vozilo</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">datum_od</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">datum_od</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">datum_do</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">datum_do</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">id_vlasnik</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">id_vlasnik</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">vlasnistvo</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;Bravo, upravo ste evidentirali vlasnistvo nad vozilom!&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;vlasnistvo.html&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;vlasnistvo&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/voziloservisrezultat&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">search_results</span><span class="p">(</span> <span class="n">search</span> <span class="p">):</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">search_string</span> <span class="o">=</span> <span class="n">search</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;izbor&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">search</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;izbor&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;select vozilo.broj_sasije,servis.datum,servis.opis_radova,servis.iznos_radova</span><span class="se">\</span>
+<span class="s1">                                     from servis, vozilo</span><span class="se">\</span>
+<span class="s1">                                     where vozilo.broj_sasije = :val</span><span class="se">\</span>
+<span class="s1">                                     and vozilo.id_vozilo = servis.id_vozilo;&#39;</span><span class="p">,{</span><span class="s1">&#39;val&#39;</span><span class="p">:</span><span class="n">search_string</span><span class="p">})</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">results</span><span class="p">:</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;Nije pronadjen rezultat&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;voziloservis&#39;</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>display results</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">table</span> <span class="o">=</span> <span class="n">ResultsVoziloServis</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">border</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;voziloservisrezultat.html&#39;</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/voziloservis&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">voziloservis</span><span class="p">():</span>
+    <span class="n">search</span> <span class="o">=</span> <span class="n">VoziloServisPretragaForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">search_results</span><span class="p">(</span><span class="n">search</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;voziloservis.html&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Servis&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">search</span><span class="p">)</span>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/majstorservis&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">majstorservis</span><span class="p">():</span>
+    <span class="n">search1</span> <span class="o">=</span> <span class="n">MajstorServisPretragaForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">search_majstorservis_results</span><span class="p">(</span><span class="n">search1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;majstorservis.html&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Servis&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">search1</span><span class="p">)</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/majstorservisrezultat&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">search_majstorservis_results</span><span class="p">(</span> <span class="n">search</span> <span class="p">):</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">search_string</span> <span class="o">=</span> <span class="n">search</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;izbor_majstor&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">search</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;izbor_majstor&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;select korisnik.ime,korisnik.prezime,vozilo.broj_sasije,servis.datum,servis.opis_radova,servis.iznos_radova</span><span class="se">\</span>
+<span class="s1">                                     from korisnik, servis, vozilo</span><span class="se">\</span>
+<span class="s1">                                     where korisnik.ime = :val</span><span class="se">\</span>
+<span class="s1">                                     and servis.id_automehanicar = korisnik.id_korisnik</span><span class="se">\</span>
+<span class="s1">                                     and servis.id_vozilo = vozilo.id_vozilo;&#39;</span><span class="p">,{</span><span class="s1">&#39;val&#39;</span><span class="p">:</span><span class="n">search_string</span><span class="p">})</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">results</span><span class="p">:</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;Nije pronadjen rezultat!&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;majstorservis&#39;</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>display results</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">table1</span> <span class="o">=</span> <span class="n">ResultsMajstorServis</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+        <span class="n">table1</span><span class="o">.</span><span class="n">border</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;majstorservisrezultat.html&#39;</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="n">table1</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <pre><code>labels = [
+</code></pre>
+<p>&lsquo;AA&rsquo;, &lsquo;BB&rsquo;
+    ]</p>
+<pre><code>values = [
+</code></pre>
+<p>967.67, 1190.89, 1079.75, 1349.19,
+   2328.91, 2504.28, 2873.83, 4764.87,
+   4349.29, 6458.30, 9907, 16297
+    ]</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/graf&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">graf</span><span class="p">():</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;select vozilo.broj_sasije,servis.iznos_radova</span><span class="se">\</span>
+<span class="s1">                                  from servis,vozilo</span><span class="se">\</span>
+<span class="s1">                                  where servis.id_vozilo = vozilo.id_vozilo</span><span class="se">\</span>
+<span class="s1">                                  group by vozilo.broj_sasije;&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+      <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;broj_sasije&quot;</span><span class="p">])</span>
+      <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;iznos_radova&quot;</span><span class="p">])</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;#F7464A&quot;</span><span class="p">,</span> <span class="s2">&quot;#46BFBD&quot;</span><span class="p">,</span> <span class="s2">&quot;#FDB45C&quot;</span><span class="p">,</span> <span class="s2">&quot;#FEDCBA&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;#ABCDEF&quot;</span><span class="p">,</span> <span class="s2">&quot;#DDDDDD&quot;</span><span class="p">,</span> <span class="s2">&quot;#ABCABC&quot;</span><span class="p">,</span> <span class="s2">&quot;#4169E1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;#C71585&quot;</span><span class="p">,</span> <span class="s2">&quot;#FF4500&quot;</span><span class="p">,</span> <span class="s2">&quot;#FEDCBA&quot;</span><span class="p">,</span> <span class="s2">&quot;#46BFBD&quot;</span><span class="p">]</span>
+
+
+    <span class="n">line_labels</span><span class="o">=</span><span class="n">labels</span>
+    <span class="n">line_values</span><span class="o">=</span><span class="n">values</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;graf.html&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Troskovnik vozlila&#39;</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">45000</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">line_labels</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">line_values</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

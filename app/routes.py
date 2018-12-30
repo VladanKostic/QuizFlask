@@ -3,7 +3,9 @@ from app.forms import LoginForm, RegistrationForm, CategoryForm, QuestionForm, A
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
-from app.models import Visitor, Category, Question, Answer, DummyAnswer, Quiz, QuizDetails #, QuizShow
+from app.models import Visitor, Category, Question, Answer, DummyAnswer, Quiz, QuizDetails
+from app.tables import ResultsSoFarQuiz
+
 import datetime
 
 @app.route('/')
@@ -233,4 +235,30 @@ def finish():
         pass
     return render_template('finish.html', title='Finish quiz', procenat_uspeha=procenat_uspeha, starttime=starttime, endtime=endtime)
 
+@app.route('/sofar')
+@login_required
+def sofar():
+    if current_user.is_authenticated:
+        user = Visitor.query.filter_by(username=current_user.username).first()
+    results = []
+    results = db.session.execute('select quiz.id_quiz as id_quiz, datetime(quiz.datetime_of_create, "localtime") as datetime_of_create, datetime(quiz.datetime_of_start, "localtime") as datetime_of_start, datetime(quiz.datetime_of_end, "localtime") as datetime_of_end,\
+                                    count(*) as number_of_question, sum(quiz_details.answer_true) as number_of_true\
+                                    from quiz, quiz_details\
+                                    where quiz.id_visitor = :val\
+                                    and quiz.id_quiz = quiz_details.id_quiz\
+                                    group by quiz.id_quiz, quiz.datetime_of_create, quiz.datetime_of_start, quiz.datetime_of_end;', {'val': user.id_visitor})
+    print(0)
+    if not results:
+        print(1)
+        flash('Nije pronadjen rezultat!')
+        return redirect(url_for('sofar.html'))
+    else:
+        print(2)
+        # display results
+        #table1 = ResultsSoFarQuiz(results)
+        data = results.fetchall()
+        print(3)
+        #table1.border = False
+        #return render_template('sofar.html', table=table1)
+        return render_template('sofar.html', user=user, data=data)
 
