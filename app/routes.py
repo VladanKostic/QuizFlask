@@ -169,7 +169,8 @@ def newquizstart():
                                                 (select answer_text from answer where answer_id_question = question.id_question) answer_text, 1 as answer_value,\
                                                 (select dummy_answer_text from dummy_answer where dummyanswer_id_question = question.id_question and serial_number = 1) dummy_answer_text1, 0 as dummy_answer_value1,\
                                                 (select dummy_answer_text from dummy_answer where dummyanswer_id_question = question.id_question and serial_number = 2) dummy_answer_text2, 0 as dummy_answer_value2,\
-                                                (select dummy_answer_text from dummy_answer where dummyanswer_id_question = question.id_question and serial_number = 3) dummy_answer_text3, 0 as dummy_answer_value3 \
+                                                (select dummy_answer_text from dummy_answer where dummyanswer_id_question = question.id_question and serial_number = 3) dummy_answer_text3, 0 as dummy_answer_value3,\
+                                                (select a1||","||a2||","||a3||","||a4 as random_answer FROM random_answer order by random() limit 1) as random_answer\
                                                 from quiz, quiz_details , question \
                                                 where quiz.id_quiz = :val \
                                                 and quiz.id_quiz = quiz_details.id_quiz \

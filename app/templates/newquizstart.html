@@ -7,33 +7,46 @@
         <br><br><br>
         {% if quizshow %}
         <table>
-
                 {% for current_quizshow in quizshow %}
                     <tr>
                         <td>
                             {{ current_quizshow.question_text}}
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                            <input type="radio" name={{current_quizshow.radio_name}} value={{current_quizshow.answer_value}} /> {{current_quizshow.answer_text}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="radio" name={{current_quizshow.radio_name}} value={{current_quizshow.dummy_answer_value1}} /> {{current_quizshow.dummy_answer_text1}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="radio" name={{current_quizshow.radio_name}} value={{current_quizshow.dummy_answer_value2}} /> {{current_quizshow.dummy_answer_text2}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="radio" name={{current_quizshow.radio_name}} value={{current_quizshow.dummy_answer_value3}} /> {{current_quizshow.dummy_answer_text3}}
-                        </td>
-                    </tr>
+                    {% set answer=current_quizshow.answer_text %}
+                    {% set dumm1=current_quizshow.dummy_answer_text1 %}
+                    {% set dumm2=current_quizshow.dummy_answer_text2 %}
+                    {% set dumm3=current_quizshow.dummy_answer_text3 %}
+                    {% set random_answer = current_quizshow.random_answer %}
+                    {% set list1 = random_answer.split(',') %}
+                        {% for list in list1 %}
+                            {% if list == '1' %}
+                                <tr>
+                                    <td>
+                                        <input type="radio" name={{current_quizshow.radio_name}} value=1 /> {{answer}}
+                                    </td>
+                                </tr>
+                                {% elif list == '10' %}
+                                <tr>
+                                    <td>
+                                        <input type="radio" name={{current_quizshow.radio_name}} value=0 /> {{dumm1}}
+                                    </td>
+                                </tr>
+                                {% elif list == '20' %}
+                                <tr>
+                                    <td>
+                                        <input type="radio" name={{current_quizshow.radio_name}} value=0 /> {{dumm2}}
+                                    </td>
+                                </tr>
+                                {% elif list == '30' %}
+                                <tr>
+                                    <td>
+                                        <input type="radio" name={{current_quizshow.radio_name}} value=0 /> {{dumm3}}
+                                    </td>
+                                </tr>
+                                {% else %}
+                            {% endif %}
+                        {% endfor %}
                 {% endfor %}
         </table>
         <br>
