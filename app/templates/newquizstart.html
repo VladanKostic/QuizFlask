@@ -1,9 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div align="center">
+    <br>
     <form action="" method="post">
 
-        <button type="submit" name="quiz" value="Start">Start quiz </button> {{startime}}
+        <button type="submit" name="quiz" value="Start" class="button startbutton">Start quiz </button>
+        <br>
+        Quiz start at:{{startime}}
         <br><br><br>
         {% if quizshow %}
         <table>
@@ -50,7 +54,8 @@
                 {% endfor %}
         </table>
         <br>
-        <button type="submit" name="quiz" value="Finish">Finish the quiz</button> {{endtime}}
+        <button type="submit" name="quiz" value="Finish" class="button finishbutton">Finish quiz</button> {{endtime}}
         {% endif %}
     </form>
+</div>
 {% endblock %}
