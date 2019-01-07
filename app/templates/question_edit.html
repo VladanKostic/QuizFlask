@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <h1>Edit question</h1>
+  {% from "includes/_formhelpers.html" import render_field %}
+  <form method="POST" action="">
+    <div class="form-group">
+      {{ render_field(form.id_category, class_="form-control") }}
+    </div>
+    <div class="form-group">
+      {{ render_field(form.question_text, class_="form-control") }}
+    </div>
+    <div class="form-group">
+      {{ render_field(form.num_question_in_game, class_="form-control") }}
+    </div>
+    <p><input class="btn btn-primary" type="submit" value="Submit">
+  </form>
+{% endblock %}

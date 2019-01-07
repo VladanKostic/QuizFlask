@@ -45,7 +45,7 @@ def choice_query_category():
 
 class Question(db.Model):
     id_question = db.Column(db.Integer, primary_key=True)
-    question_id_category = db.Column(db.Integer, db.ForeignKey('category.id_category'))
+    id_category = db.Column(db.Integer, db.ForeignKey('category.id_category'))
     question_text = db.Column(db.String(256))
     num_question_in_game = db.Column(db.Integer)
 
@@ -54,12 +54,12 @@ def choice_query_to_answer():
 
 class Answer(db.Model):
     id_answer = db.Column(db.Integer, primary_key=True)
-    answer_id_question = db.Column(db.Integer, db.ForeignKey('question.id_question'))
+    id_question = db.Column(db.Integer, db.ForeignKey('question.id_question'))
     answer_text = db.Column(db.String(256))
 
 class DummyAnswer(db.Model):
     id_dummy_answer = db.Column(db.Integer, primary_key=True)
-    dummyanswer_id_question = db.Column(db.Integer, db.ForeignKey('question.id_question'))
+    id_question = db.Column(db.Integer, db.ForeignKey('question.id_question'))
     dummy_answer_text =  db.Column(db.String(256))
     serial_number = db.Column(db.Integer)
 
@@ -79,19 +79,7 @@ class QuizDetails(db.Model):
     id_category = db.Column(db.Integer, db.ForeignKey('category.id_category'))
     id_question = db.Column(db.Integer, db.ForeignKey('question.id_question'))
     answer_true = db.Column(db.Integer)
-"""
-class QuizShow(db.Model):
-    id_quiz = db.Column(db.Integer)
-    question_text = db.Column(db.String(256))
-    answer_text = db.Column(db.String(256))
-    answer_value = db.Column(db.Integer)
-    dummy_answer_text1 = db.Column(db.String(256))
-    dummy_answer_value1 = db.Column(db.Integer)
-    dummy_answer_text2 = db.Column(db.String(256))
-    dummy_answer_value2 = db.Column(db.Integer)
-    dummy_answer_text3 = db.Column(db.String(256))
-    dummy_answer_value3 = db.Column(db.Integer)
-"""
+
 
 
 

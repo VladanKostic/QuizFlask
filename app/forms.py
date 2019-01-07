@@ -20,13 +20,11 @@ class RegistrationForm(FlaskForm):
     visitor_type_id_type_visitor = SelectField('Type of visitor', choices=[('1', 'Player'),('2', 'Admin')], validators=[DataRequired()])
     username = StringField('Username:', validators=[DataRequired()])
     password = PasswordField('Password:', validators=[DataRequired()])
-    password2 = PasswordField('Repeat the password:', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Registration')
+    confirm = PasswordField('Repeat the password:', validators=[DataRequired(), EqualTo('password')])
 
 class CategoryForm(FlaskForm):
     name = StringField('Name of category:', validators=[DataRequired()])
     explanation = StringField('Explain category:', validators=[DataRequired()])
-    submit = SubmitField('Add category')
 
     def __repr__(self):
         return '{}'.format(self.name)
@@ -35,27 +33,25 @@ def choice_query():
     return Category.query.all()
 
 class QuestionForm(FlaskForm):
-    question_id_category = QuerySelectField('The question belongs to the category:', query_factory=choice_query, get_label='name', allow_blank=False)
+    id_category = QuerySelectField('The question belongs to the category:', query_factory=choice_query, get_label='name', allow_blank=False)
     question_text = StringField('Text question:',validators=[DataRequired()])
-    submit = SubmitField('Add question')
+    num_question_in_game = StringField('Num question in game:', validators=[DataRequired()])
 
 def choice_query_to_answer():
     return Question.query.all()
 
 class AnswerForm(FlaskForm):
-    answer_id_question = QuerySelectField('The answer belongs to the query:', query_factory=choice_query_to_answer, get_label='question_text', allow_blank=False)
+    id_question = QuerySelectField('The answer belongs to the query:', query_factory=choice_query_to_answer, get_label='question_text', allow_blank=False)
     answer_text = StringField('Text answer:',validators=[DataRequired()])
-    submit = SubmitField('Add answer')
 
 def choice_query_to_danswer():
     return Question.query.all()
 
 class DummyAnswerForm(FlaskForm):
-    dummyanswer_id_question = QuerySelectField('The dummy answer belongs to the query:', query_factory=choice_query_to_danswer,
+    id_question = QuerySelectField('The dummy answer belongs to the query:', query_factory=choice_query_to_danswer,
                                               get_label='question_text', allow_blank=False)
-    dummy_answer_text = StringField('Text for dummy answer:', [validators.DataRequired(), validators.Length(min=1, max=250, message=(u'Dummy answer cannot be more than 25 characters!!!'))])
+    dummy_answer_text = StringField('Text for dummy answer:', [validators.DataRequired(), validators.Length(min=1, max=250, message=('Dummy answer cannot be more than 25 characters!!!'))])
     serial_number = StringField('Add serial number for dummy answer:', validators=[DataRequired()])
-    submit = SubmitField('Add dummy answer')
 
 class NewQuizForm(FlaskForm):
     pass

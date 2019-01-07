@@ -1,26 +1,30 @@
-{% extends "base.html" %}
+{% extends "layout.html" %}
 
-{% block content %}
-<div align="center">
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.answer_id_question.label }}<br>
-            {{ form.answer_id_question() }}
-        <ul>
-            {% for error in form.answer_id_question.errors %}
-            <li> style="color:red;">{{ error }}</li>
-            {% endfor %}
-        </ul>
-        </p>
-        <p>
-            {{ form.answer_text.label }}<br>
-            {{ form.answer_text(size=100) }}<br>
-            {% for error in form.answer_text.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit(class='button') }}</p>
-    </form>
-</div>
+{% block body %}
+  <h1>Answer</h1>
+  <a class="btn btn-success" href="/answer_add">Add answer</a>
+  <hr>
+  <table class="table table-striped">
+    <tr>
+      <th>ID answer</th>
+      <th>ID question</th>
+      <th>Answer text</th>
+      <th></th>
+      <th></th>
+    </tr>
+    {% for answer in answers %}
+      <tr>
+        <td>{{answer[0]}}</td>
+        <td>{{answer[1]}}</td>
+        <td>{{answer[2]}}</td>
+        <td><a href="answer_edit/{{answer[0]}}" class="btn btn-default pull-right">Edit</a></td>
+        <td>
+          <form action="{{url_for('answer_delete', id=answer[0])}}" method="post">
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="submit" value="Delete" class="btn btn-danger">
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
 {% endblock %}

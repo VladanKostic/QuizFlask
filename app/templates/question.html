@@ -1,26 +1,32 @@
-{% extends "base.html" %}
+{% extends "layout.html" %}
 
-{% block content %}
-<div align="center">
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.question_id_category.label }}<br>
-            {{ form.question_id_category() }}
-        <ul>
-            {% for error in form.question_id_category.errors %}
-            <li> style="color:red;">{{ error }}</li>
-            {% endfor %}
-        </ul>
-        </p>
-        <p>
-            {{ form.question_text.label }}<br>
-            {{ form.question_text(size=100) }}<br>
-            {% for error in form.question_text.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit(class='button') }}</p>
-    </form>
-</div>
+{% block body %}
+  <h1>Question</h1>
+  <a class="btn btn-success" href="/question_add">Add question</a>
+  <hr>
+  <table class="table table-striped">
+    <tr>
+      <th>ID question</th>
+      <th>ID category</th>
+      <th>Question text</th>
+      <th>Num question in game</th>
+      <th></th>
+      <th></th>
+    </tr>
+    {% for question in questions %}
+      <tr>
+        <td>{{question[0]}}</td>
+        <td>{{question[1]}}</td>
+        <td>{{question[2]}}</td>
+        <td>{{question[3]}}</td>
+        <td><a href="question_edit/{{question[0]}}" class="btn btn-default pull-right">Edit</a></td>
+        <td>
+          <form action="{{url_for('question_delete', id=question[0])}}" method="post">
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="submit" value="Delete" class="btn btn-danger">
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
 {% endblock %}

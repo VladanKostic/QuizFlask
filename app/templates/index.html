@@ -1,7 +1,7 @@
-{% extends "base.html" %}
+{% extends "layout.html" %}
 
-{% block content %}
-    <div>
+{% block body %}
+  <div>
 
          {% if current_user.is_authenticated %}
             <p>Hi user {{ user.first_name }}, welcome to online quiz!</p>
@@ -9,14 +9,20 @@
 
          {% if user.visitor_type_id_type_visitor == 2 %}
             <p>You are login with the privileges of the adminiistrator!</p>
-            <a href="{{ url_for('category') }}">Category</a><br>
+            <a href="{{ url_for('add_category') }}">Category</a><br>
             <a href="{{ url_for('question') }}">Question</a><br>
             <a href="{{ url_for('answer') }}">Answer</a><br>
             <a href="{{ url_for('dummyanswer') }}">Dummy answer</a><br>
+            <a href="{{ url_for('dashboardcategory') }}">Dashboard category</a><br>
          {% else %}
             <p>You are login with the privileges of the player!</p>
             <a href="{{ url_for('newquiz') }}">Start new quiz</a><br>
             <a href="{{ url_for('sofar') }}">See the results so far</a><br>
          {% endif %}
     </div>
-{%endblock %}
+{% endblock %}
+
+
+
+
+
