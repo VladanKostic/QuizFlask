@@ -542,21 +542,36 @@ def answerdummy_delete(id):
     flash('Dummy answer deleted', 'success')
     return redirect(url_for('answer'))
 
-
-
 @app.route('/newquiz', methods=['GET', 'POST'])
-@login_required
+@is_logged_in
 def newquiz():
-    if current_user.is_authenticated:
-        user = Visitor.query.filter_by(username=current_user.username).first()
+    loged = session['logged_in'] # True or False
+    username = session['username']
+    if loged:
+        user = Visitor.query.filter_by(username=username).first()
     form = NewQuizForm()
-    if form.validate_on_submit():
+    if request.method == 'POST': #if form.validate_on_submit():
+        # Create cursor
+        try:
+            conn = sqlite3.connect("quiz.db")
+        except Error as e:
+            print(e)
+        cur = conn.cursor()
+
         selected_categories = request.form.getlist('selected_categories')
         max_num_question = request.form.get('maxnumquestion')
         create_time = datetime.datetime.now()
-        quiz = Quiz(id_visitor=user.id_visitor, datetime_of_create=create_time, datetime_of_start=create_time, datetime_of_end=create_time,total_question_true=0, total_question_false=0,total_score_in_percent=0)
-        db.session.add(quiz)
-        db.session.commit()
+
+        # Execute
+        cur.execute("INSERT INTO quiz (id_visitor,datetime_of_create,datetime_of_start,datetime_of_end,total_question_true,total_question_false,total_score_in_percent) VALUES (?,?,?,?,?,?,?) ", (user.id_visitor, create_time, create_time, create_time, 0, 0, 0))
+        #quiz = Quiz(id_visitor=user.id_visitor, datetime_of_create=create_time, datetime_of_start=create_time, datetime_of_end=create_time,total_question_true=0, total_question_false=0,total_score_in_percent=0)
+        #db.session.add(quiz)
+        #db.session.commit()
+        # Commit to DB
+        conn.commit()
+
+        quiz = Quiz.query.filter_by(id_visitor=user.id_visitor,datetime_of_create=create_time).first()
+
         for current_category in selected_categories:
             current_num_question = 1
             for current_num_question in range(int(max_num_question)):
@@ -572,7 +587,7 @@ def newquiz():
 
 def get_id_question_for_category(p_current_category):
      """Pitanja sa minimalnim brojem koriscenja"""
-     question = db.session.execute('select id_question,min(num_question_in_game) from question where question_id_category=:val group by question_id_category',{'val': p_current_category}).first()
+     question = db.session.execute('select id_question,min(num_question_in_game) from question where id_category=:val group by id_category',{'val': p_current_category}).first()
      return_id_question = question.id_question
      queryQuestion = Question.query.filter_by(id_question=return_id_question).first()
      queryQuestion.num_question_in_game = queryQuestion.num_question_in_game+1
@@ -580,13 +595,15 @@ def get_id_question_for_category(p_current_category):
      return return_id_question
 
 @app.route('/newquizstart', methods=['GET', 'POST'])
-@login_required
+@is_logged_in
 def newquizstart():
     print(request)
     current_quiz = request.args.get('current_quiz', None)
 
-    if current_user.is_authenticated:
-        user = Visitor.query.filter_by(username=current_user.username).first()
+    loged = session['logged_in']  # True or False
+    username = session['username']
+    if loged:
+        user = Visitor.query.filter_by(username=username).first()
 
     if request.method == 'GET':
         pass
@@ -603,10 +620,10 @@ def newquizstart():
                                                 quiz.id_quiz,\
                                                 question.question_text,\
                                                 "QUI"||quiz.id_quiz||"DET"||quiz_details.id_quiz_details||"QUE"||question.id_question as radio_name,\
-                                                (select answer_text from answer where answer_id_question = question.id_question) answer_text, 1 as answer_value,\
-                                                (select dummy_answer_text from dummy_answer where dummyanswer_id_question = question.id_question and serial_number = 1) dummy_answer_text1, 0 as dummy_answer_value1,\
-                                                (select dummy_answer_text from dummy_answer where dummyanswer_id_question = question.id_question and serial_number = 2) dummy_answer_text2, 0 as dummy_answer_value2,\
-                                                (select dummy_answer_text from dummy_answer where dummyanswer_id_question = question.id_question and serial_number = 3) dummy_answer_text3, 0 as dummy_answer_value3,\
+                                                (select answer_text from answer where id_question = question.id_question) answer_text, 1 as answer_value,\
+                                                (select dummy_answer_text from dummy_answer where id_question = question.id_question and serial_number = 1) dummy_answer_text1, 0 as dummy_answer_value1,\
+                                                (select dummy_answer_text from dummy_answer where id_question = question.id_question and serial_number = 2) dummy_answer_text2, 0 as dummy_answer_value2,\
+                                                (select dummy_answer_text from dummy_answer where id_question = question.id_question and serial_number = 3) dummy_answer_text3, 0 as dummy_answer_value3,\
                                                 (select a1||","||a2||","||a3||","||a4 as random_answer FROM random_answer order by random() limit 1) as random_answer\
                                                 from quiz, quiz_details , question \
                                                 where quiz.id_quiz = :val \
@@ -649,10 +666,12 @@ def newquizstart():
     return render_template('newquizstart.html', title='New quiz start')
 
 @app.route('/finish', methods=['GET', 'POST'])
-@login_required
+@is_logged_in
 def finish():
-    if current_user.is_authenticated:
-        user = Visitor.query.filter_by(username=current_user.username).first()
+    loged = session['logged_in']  # True or False
+    username = session['username']
+    if loged:
+        user = Visitor.query.filter_by(username=username).first()
     id_quiz = request.args.get('quiz', None)
     starttime = request.args.get('starttime', None)
     endtime = request.args.get('endtime', None)
@@ -671,10 +690,12 @@ def finish():
     return render_template('finish.html', title='Finish quiz', procenat_uspeha=procenat_uspeha, starttime=starttime, endtime=endtime)
 
 @app.route('/sofar')
-@login_required
+@is_logged_in
 def sofar():
-    if current_user.is_authenticated:
-        user = Visitor.query.filter_by(username=current_user.username).first()
+    loged = session['logged_in']  # True or False
+    username = session['username']
+    if loged:
+        user = Visitor.query.filter_by(username=username).first()
     results = []
     results = db.session.execute('select quiz.id_quiz as id_quiz, datetime(quiz.datetime_of_create, "localtime") as datetime_of_create, datetime(quiz.datetime_of_start, "localtime") as datetime_of_start, datetime(quiz.datetime_of_end, "localtime") as datetime_of_end,\
                                     count(*) as number_of_question, sum(quiz_details.answer_true) as number_of_true\
