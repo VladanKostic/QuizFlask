@@ -8,40 +8,40 @@
             <!-- Image and text -->
             <nav class="navbar navbar-light bg-light">
               <a class="navbar-brand" href="{{ url_for('category') }}">
-                <img src="static/images/category.png" width="64" height="64" class="d-inline-block align-top" alt="">
-                Category section. Here you can enter, edit or delete all categories of this quiz.
+                <p><img src="static/images/category.png" width="64" height="64" class="d-inline-block align-top" alt="" align="midle">
+                   Category section. Here you can enter, edit or delete all categories of this quiz.</p>
               </a>
             </nav><br><br>
             <nav class="navbar navbar-light bg-light">
               <a class="navbar-brand" href="{{ url_for('question') }}">
-                <img src="static/images/question.png" width="64" height="64" class="d-inline-block align-top" alt="">
-                Question section. Here you can enter, edit or delete all question of this quiz.
+                <p><img src="static/images/question.png" width="64" height="64" class="d-inline-block align-top" alt="" align="midle">
+                    Question section. Here you can enter, edit or delete all question of this quiz.</p>
               </a>
             </nav><br><br>
             <nav class="navbar navbar-light bg-light">
               <a class="navbar-brand" href="{{ url_for('answer') }}">
-                <img src="static/images/answer.png" width="64" height="64" class="d-inline-block align-top" alt="">
-                Answer section. Here you can enter, edit or delete all answer of this quiz.
+                <p><img src="static/images/answer.png" width="64" height="64" class="d-inline-block align-top" alt="" align="midle">
+                   Answer section. Here you can enter, edit or delete all answer of this quiz.</p>
               </a>
             </nav><br><br>
             <nav class="navbar navbar-light bg-light">
               <a class="navbar-brand" href="{{ url_for('answerdummy') }}">
-                <img src="static/images/dummyanswer.png" width="64" height="64" class="d-inline-block align-top" alt="">
-                Dummy answer section. Here you can enter, edit or delete all dummy answer of this quiz.
+                <p><img src="static/images/dummyanswer.png" width="64" height="64" class="d-inline-block align-top" alt="" align="midle">
+                   Dummy answer section. Here you can enter, edit or delete all dummy answer of this quiz.</p>
               </a>
             </nav>
          {% else %}
             <p>This is your dashboard and you are login with the privileges of the player!</p>
             <nav class="navbar navbar-light bg-light">
               <a class="navbar-brand" href="{{ url_for('newquiz') }}">
-                <img src="static/images/start.png" width="64" height="64" class="d-inline-block align-top" alt="">
-                Star your quiz.
+                <p><img src="static/images/start.png" width="64" height="64" class="d-inline-block align-top" alt="" align="midle">
+                    Start your quiz.</p>
               </a>
             </nav><br><br>
             <nav class="navbar navbar-light bg-light">
               <a class="navbar-brand" href="{{ url_for('sofar') }}">
-                <img src="static/images/statistics.png" width="64" height="64" class="d-inline-block align-top" alt="">
-                Statistic of the your quiz.
+                  <p><img src="static/images/statistics.png" width="64" height="64" class="d-inline-block align-top" alt="" align="center">
+                      Statistic of the your quiz.</p>
               </a>
             </nav>
          {% endif %}

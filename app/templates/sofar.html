@@ -1,9 +1,17 @@
 {% extends "layout.html" %}
 
 {% block body %}
-<<div>
-        <p>Hi user {{ user.first_name }}! For now your results of quiz is:</p><br>
-        <table border="" cellpadding="2" cellspacing="2">
+<div>
+    <h1>Hi user {{ user.first_name }}! For now your results of quiz is:</h1><br>
+    <table class="table table-striped">
+    <tr>
+      <th>ID quiz</th>
+      <th>Create time</th>
+      <th>Start time</th>
+      <th>Finis time</th>
+      <th>Num question</th>
+      <th>Num true question</th>
+    </tr>
         {% for row in data %}
             <tr>
             {% for d in row %}

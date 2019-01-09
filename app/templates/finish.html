@@ -1,9 +1,29 @@
 {% extends "layout.html" %}
 
 {% block body %}
-<p>Hi user {{ user.first_name }}!</p>
-Quiz start on: {{starttime}} <br>
-Quiz finish on: {{endtime}} <br>
-Statistics: {{procenat_uspeha}}%
-
+{% if procenat_uspeha > 75 %}
+            <h1>{{ user.first_name }}, We congratulate to you!</h1>
+            <blockquote>
+            <p>
+                Quiz start on: {{starttime}} <br>
+                Quiz finish on: {{endtime}} <br>
+                Your score is: {{procenat_uspeha}} %
+            </p>
+{% elif procenat_uspeha > 25 and procenat_uspeha < 75 %}
+            <h1>{{ user.first_name }}, you result is good!</h1>
+            <blockquote>
+            <p>
+                Quiz start on: {{starttime}} <br>
+                Quiz finish on: {{endtime}} <br>
+                Your score is: {{procenat_uspeha}} %
+            </p>
+{% else %}
+            <h1>{{ user.first_name }}, you have to learn more!</h1>
+            <blockquote>
+            <p>
+                Quiz start on: {{starttime}} <br>
+                Quiz finish on: {{endtime}} <br>
+                Your score is:  {{procenat_uspeha}} %
+            <p>
+{% endif %}
 {% endblock %}

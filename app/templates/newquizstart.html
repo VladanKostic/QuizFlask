@@ -1,11 +1,11 @@
-{% extends 'layout.html' %}
+{% extends "layout.html" %}
 
 {% block body %}
 <div align="center">
     <br>
     <form action="" method="post">
 
-        <button type="submit" name="quiz" value="Start" class="button startbutton">Start quiz </button>
+        <button type="submit" name="quiz" value="Start" class="btn btn-primary">Start quiz </button>
         <br>
         Quiz start at:{{startime}}
         <br><br><br>
@@ -54,7 +54,7 @@
                 {% endfor %}
         </table>
         <br>
-        <button type="submit" name="quiz" value="Finish" class="button finishbutton">Finish quiz</button> {{endtime}}
+        <button type="submit" name="quiz" value="Finish" class="btn btn-primary">Finish quiz</button> {{endtime}}
         {% endif %}
     </form>
 </div>

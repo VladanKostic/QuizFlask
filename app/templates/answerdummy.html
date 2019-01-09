@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block body %}
+  <h1>Answer dummy</h1>
+  <a class="btn btn-success" href="/answerdummy_add">Add answer</a>
+  <hr>
+  <table class="table table-striped">
+    <tr>
+      <th>ID dummy answer</th>
+      <th>ID question</th>
+      <th>Dummy answer text</th>
+      <th>Serial number</th>
+      <th></th>
+      <th></th>
+    </tr>
+    {% for answerd in answerds %}
+      <tr>
+        <td>{{answerd[0]}}</td>
+        <td>{{answerd[1]}}</td>
+        <td>{{answerd[2]}}</td>
+        <td>{{answerd[3]}}</td>
+        <td><a href="answerdummy_edit/{{answerd[0]}}" class="btn btn-default pull-right">Edit</a></td>
+        <td>
+          <form action="{{url_for('answerdummy_delete', id=answerd[0])}}" method="post">
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="submit" value="Delete" class="btn btn-danger">
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}
