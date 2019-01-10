@@ -43,7 +43,13 @@
                   <p><img src="static/images/statistics.png" width="64" height="64" class="d-inline-block align-top" alt="" align="center">
                       Statistic of the your quiz.</p>
               </a>
-            </nav>
+            </nav><br><br>
+            <nav class="navbar navbar-light bg-light">
+              <a class="navbar-brand" href="{{ url_for('sofargraph') }}">
+                  <p><img src="static/images/graph.png" width="64" height="64" class="d-inline-block align-top" alt="" align="center">
+                      Graphics of the your quiz.</p>
+              </a>
+            </nav><br><br>
          {% endif %}
     </div>
 {% endblock %}

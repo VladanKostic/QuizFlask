@@ -718,3 +718,35 @@ def sofar():
         #return render_template('sofar.html', table=table1)
         return render_template('sofar.html', user=user, data=data)
 
+@app.route('/sofargrapf')
+def sofargraph():
+    loged = session['logged_in']  # True or False
+    username = session['username']
+    results = []
+    labels = []
+    values = []
+
+    if loged:
+        user = Visitor.query.filter_by(username=username).first()
+        results = db.session.execute('select quiz.id_quiz as id_quiz, datetime(quiz.datetime_of_create, "localtime") as datetime_of_create, datetime(quiz.datetime_of_start, "localtime") as datetime_of_start, datetime(quiz.datetime_of_end, "localtime") as datetime_of_end,\
+                                        count(*) as number_of_question, sum(ifnull(quiz_details.answer_true,0)) as number_of_true\
+                                        from quiz, quiz_details\
+                                        where quiz.id_visitor = :val\
+                                        and quiz.id_quiz = quiz_details.id_quiz\
+                                        group by quiz.id_quiz, quiz.datetime_of_create, quiz.datetime_of_start, quiz.datetime_of_end;',
+                                        {'val': user.id_visitor})
+
+    for row in results:
+      labels.append(row["datetime_of_end"])
+      estimation = (100*row["number_of_true"])/row["number_of_question"]
+      #values.append(row["number_of_question"])
+      values.append(estimation)
+
+    colors = [
+        "#F7464A", "#46BFBD", "#FDB45C", "#FEDCBA",
+        "#ABCDEF", "#DDDDDD", "#ABCABC", "#4169E1",
+        "#C71585", "#FF4500", "#FEDCBA", "#46BFBD"]
+
+    line_labels=labels
+    line_values=values
+    return render_template('sofargraph.html', title='Graph of the result', max=100, labels=line_labels, values=line_values)
