@@ -23,34 +23,48 @@
                     {% set dumm3=current_quizshow.dummy_answer_text3 %}
                     {% set random_answer = current_quizshow.random_answer %}
                     {% set list1 = random_answer.split(',') %}
-                        {% for list in list1 %}
+
+                         {% for list in list1 %}
                             {% if list == '1' %}
+
                                 <tr>
                                     <td>
+                                        <blockquote>
+                                        <p>
                                         <input type="radio" name={{current_quizshow.radio_name}} value=1 /> {{answer}}
+                                        </p>
                                     </td>
                                 </tr>
                                 {% elif list == '10' %}
                                 <tr>
                                     <td>
-                                        <input type="radio" name={{current_quizshow.radio_name}} value=0 /> {{dumm1}}
+                                        <blockquote>
+                                        <p>
+                                         <input type="radio" name={{current_quizshow.radio_name}} value=0 /> {{dumm1}}
+                                        </p>
                                     </td>
                                 </tr>
                                 {% elif list == '20' %}
                                 <tr>
                                     <td>
+                                        <blockquote>
+                                        <p>
                                         <input type="radio" name={{current_quizshow.radio_name}} value=0 /> {{dumm2}}
+                                        </p>
                                     </td>
                                 </tr>
                                 {% elif list == '30' %}
                                 <tr>
                                     <td>
+                                        <blockquote>
+                                        <p>
                                         <input type="radio" name={{current_quizshow.radio_name}} value=0 /> {{dumm3}}
+                                        </p>
                                     </td>
                                 </tr>
                                 {% else %}
                             {% endif %}
-                        {% endfor %}
+                         {% endfor %}
                 {% endfor %}
         </table>
         <br>
