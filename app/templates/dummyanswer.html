@@ -5,14 +5,13 @@
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>
-            {{ form.dummyanswer_id_question.label }}<br>
-            {{ form.dummyanswer_id_question() }}
-        <ul>
-            {% for error in form.dummyanswer_id_question.errors %}
-            <li> style="color:red;">{{ error }}</li>
-            {% endfor %}
-        </ul>
-        </p>
+                {{ form.dummyanswer_id_question.label }}<br>
+                {{ form.dummyanswer_id_question() }}
+            <ul>
+                {% for error in form.dummyanswer_id_question.errors %}
+                <li> style="color:red;">{{ error }}</li>
+                {% endfor %}
+            </ul>
         <p>
             {{ form.dummy_answer_text.label }}<br>
             {{ form.dummy_answer_text(size=100)}}<br>

@@ -4,26 +4,29 @@
 {% if procenat_uspeha > 75 %}
             <h1>{{ user.first_name }}, We congratulate to you!</h1>
             <blockquote>
-            <p>
-                Quiz start on: {{starttime}} <br>
-                Quiz finish on: {{endtime}} <br>
-                Your score is: {{procenat_uspeha}} %
-            </p>
+                <p>
+                    Quiz start on: {{starttime}} <br>
+                    Quiz finish on: {{endtime}} <br>
+                    Your score is: {{procenat_uspeha}} %
+                </p>
+            </blockquote>
 {% elif procenat_uspeha > 25 and procenat_uspeha < 75 %}
             <h1>{{ user.first_name }}, you result is good!</h1>
             <blockquote>
-            <p>
-                Quiz start on: {{starttime}} <br>
-                Quiz finish on: {{endtime}} <br>
-                Your score is: {{procenat_uspeha}} %
-            </p>
+                <p>
+                    Quiz start on: {{starttime}} <br>
+                    Quiz finish on: {{endtime}} <br>
+                    Your score is: {{procenat_uspeha}} %
+                </p>
+            </blockquote>
 {% else %}
             <h1>{{ user.first_name }}, you have to learn more!</h1>
             <blockquote>
-            <p>
-                Quiz start on: {{starttime}} <br>
-                Quiz finish on: {{endtime}} <br>
-                Your score is:  {{procenat_uspeha}} %
-            <p>
+                <p>
+                    Quiz start on: {{starttime}} <br>
+                    Quiz finish on: {{endtime}} <br>
+                    Your score is:  {{procenat_uspeha}} %
+                <p>
+            </blockquote>
 {% endif %}
 {% endblock %}
