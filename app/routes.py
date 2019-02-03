@@ -1,137 +1,16 @@
 from app import app, db
-from app.forms import RegistrationForm, CategoryForm, QuestionForm, AnswerForm, DummyAnswerForm, NewQuizForm
+from app.users.__utils__ import is_logged_in
+from app.forms import CategoryForm, QuestionForm, AnswerForm, DummyAnswerForm, NewQuizForm
 from flask import render_template, flash, redirect, request, url_for, session
 from app.models import Visitor, Category, Question, Quiz, QuizDetails
-from passlib.hash import sha256_crypt
 import sqlite3
 from sqlite3 import Error
-from functools import wraps
 import datetime
+from app.users.routes import users
+from app.main.routes import main
 
-
-# Check if user logged in
-def is_logged_in(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if 'logged_in' in session:
-            return f(*args, **kwargs)
-        else:
-            flash('Unauthorized, Please login', 'danger')
-            return redirect(url_for('login'))
-
-    return wrap
-
-
-@app.route('/')
-def home():
-    return render_template('home.html')
-
-
-@app.route('/about')
-def about():
-    return render_template('about.html')
-
-
-# User login
-# noinspection PyUnreachableCode,PyUnreachableCode
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    global result, conn
-    if request.method == 'POST':
-        # Get Form Fields
-        username = request.form['username']
-        password_candidate = request.form['password']
-
-        # Create cursor
-        try:
-            conn = sqlite3.connect("quiz.db")
-        except Error as e:
-            print(e)
-        cur = conn.cursor()
-
-        # Get user by username
-        t = (username,)
-        try:
-            result = cur.execute('SELECT * FROM visitor WHERE username = ?', t)
-        except Error as e:
-            print(e)
-
-        if result:
-            # Get stored hash
-            data = cur.fetchone()
-            password = data[9]
-            # Compare Passwords
-            if sha256_crypt.verify(password_candidate, password):
-                # Passed
-                session['logged_in'] = True
-                session['username'] = username
-                flash('You are now logged in', 'success')
-                return redirect(url_for('dashboard'))
-            else:
-                error = 'Invalid login'
-                return render_template('login.html', error=error)
-            # Close connection
-            cur.close()
-        else:
-            error = 'Username not found'
-            return render_template('login.html', error=error)
-
-    return render_template('login.html')
-
-
-# Logout
-@app.route('/logout')
-@is_logged_in
-def logout():
-    session.clear()
-    flash('You are now logged out', 'success')
-    return redirect(url_for('login'))
-
-
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    global conn
-    form = RegistrationForm(request.form)
-    print(request.method)
-    if request.method == 'POST':
-        first_name = form.first_name.data
-        last_name = form.last_name.data
-        adresa_ptt = form.adresa_ptt.data
-        adresa_mesto = form.adresa_mesto.data
-        adresa_ulica_broj = form.adresa_ulica_broj.data
-        email = form.email.data
-        visitor_type_id_type_visitor = form.visitor_type_id_type_visitor.data
-        username = form.username.data
-        password = sha256_crypt.encrypt(str(form.password.data))
-        # Create cursor
-        try:
-            conn = sqlite3.connect("quiz.db")
-        except Error as e:
-            print(e)
-        cur = conn.cursor()
-        # Execute query
-        cur.execute(
-            "INSERT INTO visitor (first_name,last_name,adresa_ptt,adresa_mesto,adresa_ulica_broj,email,visitor_type_id_type_visitor,username,password) VALUES(?,?,?,?,?,?,?,?,?)",
-            (first_name, last_name, adresa_ptt, adresa_mesto, adresa_ulica_broj, email, visitor_type_id_type_visitor,
-             username, password))
-        # Commit to DB
-        conn.commit()
-        # Close connection
-        cur.close()
-        flash('You are now registered and can log in', 'success')
-        return redirect(url_for('login'))
-    return render_template('register.html', form=form)
-
-
-# Dashboard
-@app.route('/dashboard')
-@is_logged_in
-def dashboard():
-    global user
-    if session['logged_in']:
-        username = session['username']
-        user = Visitor.query.filter_by(username=username).first()
-    return render_template('dashboard.html', user=user)
+app.register_blueprint(users)
+app.register_blueprint(main)
 
 
 # noinspection PyUnreachableCode
@@ -244,7 +123,7 @@ def category_delete(c_id):
     return redirect(url_for('category'))
 
 
-# noinspection PyUnreachableCode
+# Question
 @app.route('/question', methods=['GET', 'POST'])
 @is_logged_in
 def question():
@@ -263,9 +142,9 @@ def question():
     else:
         msg = 'No question Found'
         return render_template('dashboard.html', msg=msg)
-    # Close connection
 
 
+# Add question
 @app.route('/question_add', methods=['GET', 'POST'])
 @is_logged_in
 def question_add():
@@ -338,7 +217,7 @@ def question_edit(q_id):
     return render_template('question_edit.html', form=form)
 
 
-# Delete Question
+# Delete question
 @app.route('/question_delete/<string:qd_id>', methods=['GET', 'POST'])
 @is_logged_in
 def question_delete(qd_id):
@@ -360,7 +239,6 @@ def question_delete(qd_id):
 
 
 # Answer
-# noinspection PyUnreachableCode
 @app.route('/answer', methods=['GET', 'POST'])
 @is_logged_in
 def answer():
@@ -379,7 +257,6 @@ def answer():
     else:
         msg = 'No answer Found'
         return render_template('dashboard.html', msg=msg)
-    # Close connection
 
 
 # Add answer
@@ -470,7 +347,7 @@ def answer_delete(ad_id):
     return redirect(url_for('answer'))
 
 
-# noinspection PyUnreachableCode
+# Answer dummy
 @app.route('/answerdummy', methods=['GET', 'POST'])
 @is_logged_in
 def answerdummy():
@@ -492,7 +369,7 @@ def answerdummy():
     # Close connection
 
 
-# Add answer
+# Add answerdummy
 @app.route('/answerdummy_add', methods=['GET', 'POST'])
 @is_logged_in
 def answerdummy_add():
@@ -520,7 +397,7 @@ def answerdummy_add():
     return render_template('answerdummy_add.html', form=form)
 
 
-# Edit answer
+# Edit answerdummy
 @app.route('/answerdummy_edit/<string:ans_id>', methods=['GET', 'POST'])
 @is_logged_in
 def answerdummy_edit(ans_id):
@@ -563,7 +440,7 @@ def answerdummy_edit(ans_id):
     return render_template('answerdummy_edit.html', form=form)
 
 
-# Delete answer
+# Delete answerdummy
 @app.route('/answerdummy_delete/<string:ansd_id>', methods=['GET', 'POST'])
 @is_logged_in
 def answerdummy_delete(ansd_id):
@@ -584,6 +461,7 @@ def answerdummy_delete(ansd_id):
     return redirect(url_for('answer'))
 
 
+# New quiz
 @app.route('/newquiz', methods=['GET', 'POST'])
 @is_logged_in
 def newquiz():
@@ -644,6 +522,7 @@ def get_id_question_for_category(p_current_category):
     return return_id_question
 
 
+# New quiz start
 @app.route('/newquizstart', methods=['GET', 'POST'])
 @is_logged_in
 def newquizstart():
@@ -719,6 +598,7 @@ def newquizstart():
     return render_template('newquizstart.html', title='New quiz start')
 
 
+# Finish
 @app.route('/finish', methods=['GET', 'POST'])
 @is_logged_in
 def finish():
@@ -748,6 +628,7 @@ def finish():
                            endtime=endtime)
 
 
+# Sofar
 @app.route('/sofar')
 @is_logged_in
 def sofar():
@@ -774,6 +655,7 @@ def sofar():
         return render_template('sofar.html', user=user, data=data)
 
 
+# So far graph
 @app.route('/sofargrapf')
 def sofargraph():
     loged = session['logged_in']  # True or False
