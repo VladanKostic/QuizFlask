@@ -21,7 +21,7 @@
         <td>{{answerd[3]}}</td>
         <td><a href="answerdummy_edit/{{answerd[0]}}" class="btn btn-default pull-right">Edit</a></td>
         <td>
-          <form action="{{url_for('answerdummy_delete', id=answerd[0])}}" method="post">
+          <form action="{{url_for('quiz.answerdummy_delete', ansd_id=answerd[0])}}" method="post">
             <input type="hidden" name="_method" value="DELETE">
             <input type="submit" value="Delete" class="btn btn-danger">
           </form>

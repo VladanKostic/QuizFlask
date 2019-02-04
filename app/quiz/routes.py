@@ -119,7 +119,7 @@ def category_delete(c_id):
     # Close connection
     cur.close()
     flash('Category deleted', 'success')
-    return redirect(url_for('category'))
+    return redirect(url_for('quiz.category'))
 
 
 # Question

@@ -21,7 +21,7 @@
         <td>{{question[3]}}</td>
         <td><a href="question_edit/{{question[0]}}" class="btn btn-default pull-right">Edit</a></td>
         <td>
-          <form action="{{url_for('question_delete', id=question[0])}}" method="post">
+          <form action="{{url_for('quiz.question_delete', qd_id=question[0])}}" method="post">
             <input type="hidden" name="_method" value="DELETE">
             <input type="submit" value="Delete" class="btn btn-danger">
           </form>
