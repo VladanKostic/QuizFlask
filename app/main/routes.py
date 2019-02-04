@@ -33,7 +33,7 @@ def dashboard():
             if result:
                 # Get stored hash
                 data = cur.fetchone()
-                return render_template('dashboard.html', user=data)
+                return render_template('dashboard.html', user=data[1])
             else:
                 error = 'Invalid login'
                 return render_template('login.html', error=error)

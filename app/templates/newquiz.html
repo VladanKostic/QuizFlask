@@ -9,16 +9,16 @@
             <label>Chooce category for new quiz:</label><br><br>
             <table>
                     {% if categories %}
-                    {% for category in categories %}
-                        <tr>
-                            <td>
-                                <label>{{ category.name}}: </label>
-                            </td>
-                            <td>
-                                <input type="checkbox" class="form-check-input" name="selected_categories" value={{category.id_category}} />
-                           </td>
-                        </tr>
-                    {% endfor %}
+                        {% for category in categories %}
+                            <tr>
+                                <td>
+                                    <label>{{ category.name}}: </label>
+                                </td>
+                                <td>
+                                    <input type="checkbox" class="form-check-input" name="selected_categories" value={{category.id_category}} />
+                               </td>
+                            </tr>
+                        {% endfor %}
                     {% else %}
                     <tr>
                         <td>Not check boxes</td>>
