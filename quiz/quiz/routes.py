@@ -62,14 +62,14 @@ def category_add():
 
 
 # Edit Category
-@quiz.route('/category_edit/<string:p_id>', methods=['GET', 'POST'])
+@quiz.route('/category_edit/<string:c_id>', methods=['GET', 'POST'])
 @is_logged_in
-def category_edit(p_id):
+def category_edit(c_id):
     # Create cursor
     try:
         conn_c = sqlite3.connect("quiz.db")
         cur = conn_c.cursor()
-        t = [p_id]
+        t = [c_id]
         # Get article by id
         cur.execute("SELECT * FROM category WHERE id_category = ?", t)
         category_e = cur.fetchone()
@@ -83,7 +83,7 @@ def category_edit(p_id):
             explanation = request.form['explanation']
             print(explanation)
             # Execute
-            cur.execute("UPDATE category SET name = ?, explanation = ? WHERE id_category = ?", (name, explanation, p_id))
+            cur.execute("UPDATE category SET name = ?, explanation = ? WHERE id_category = ?", (name, explanation, c_id))
             # Commit to DB
             conn_c.commit()
             # Close connection
@@ -173,41 +173,35 @@ def question_edit(q_id):
     # Create cursor
     global conn
     try:
-        conn = sqlite3.connect("quiz.db")
+        conn_c = sqlite3.connect("quiz.db")
+        cur = conn_c.cursor()
+        t = [q_id]
+        # Get article by id
+        cur.execute("SELECT * FROM question WHERE id_question = ?", t)
+        question_e = cur.fetchone()
+        # Get form
+        form = QuestionForm(request.form)
+        # Populate category form fields
+        form.id_category.data = question_e[1]
+        form.question_text.data = question_e[2]
+        form.num_question_in_game.data = question_e[3]
+        if request.method == 'POST':  # and form.validate():
+            id_category = request.form['id_category']
+            question_text = request.form['question_text']
+            num_question_in_game = request.form['num_question_in_game']
+            # Execute
+            cur.execute(
+                "UPDATE question SET id_category = ?, question_text = ?, num_question_in_game = ? WHERE id_question = ?",
+                (id_category, question_text, num_question_in_game, q_id))
+            # Commit to DB
+            conn.commit()
+            # Close connection
+            cur.close()
+            flash('Question updated', 'success')
+            return redirect(url_for('quiz.question'))
+        return render_template('question_edit.html', form=form)
     except Error as e:
         print(e)
-    cur = conn.cursor()
-
-    # Get article by q_id
-
-    question_e = cur.fetchone()
-    cur.close()
-    # Get form
-    form = QuestionForm(request.form)
-    # Populate category form fields
-    form.id_category.data = question_e[1]
-    form.question_text.data = question_e[2]
-    form.num_question_in_game.data = question_e[3]
-    if request.method == 'POST':  # and form.validate():
-        id_category = request.form['id_category']
-        question_text = request.form['question_text']
-        num_question_in_game = request.form['num_question_in_game']
-        try:
-            conn = sqlite3.connect("quiz.db")
-        except Error as e:
-            print(e)
-        cur = conn.cursor()
-        # Execute
-        cur.execute(
-            "UPDATE question SET id_category = ?, question_text = ?, num_question_in_game = ? WHERE id_question = ?",
-            (id_category, question_text, num_question_in_game, q_id))
-        # Commit to DB
-        conn.commit()
-        # Close connection
-        cur.close()
-        flash('Question updated', 'success')
-        return redirect(url_for('question'))
-    return render_template('question_edit.html', form=form)
 
 
 # Delete question
