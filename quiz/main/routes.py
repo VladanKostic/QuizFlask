@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, session
-from app.users.__utils__ import is_logged_in
+from quiz.users.__utils__ import is_logged_in
 from sqlite3 import Error
 import sqlite3
 

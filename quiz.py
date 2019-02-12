@@ -1,4 +1,4 @@
-from app import app
+from quiz import app
 app.run()
 
 

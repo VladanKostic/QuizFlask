@@ -1,11 +1,11 @@
 import sqlite3
 import datetime
 from sqlite3 import Error
-from app.forms import CategoryForm, QuestionForm, AnswerForm, DummyAnswerForm, NewQuizForm
+from quiz.forms import CategoryForm, QuestionForm, AnswerForm, DummyAnswerForm, NewQuizForm
 from flask import Blueprint, render_template, flash, redirect, request, url_for, session
-from app.models import Visitor, Category, Question, Quiz, QuizDetails
-from app.users.__utils__ import is_logged_in
-from app import db
+from quiz.models import Visitor, Category, Question, Quiz, QuizDetails
+from quiz.users.__utils__ import is_logged_in
+from quiz import db
 
 
 quiz = Blueprint('quiz', __name__)
@@ -57,48 +57,42 @@ def category_add():
         # Close connection
         conn.close()
         flash('Category created', 'success')
-        return redirect(url_for('category'))
+        return redirect(url_for('quiz.category'))
     return render_template('category_add.html', form=form)
 
 
 # Edit Category
-@quiz.route('/category_edit/<string:id>', methods=['GET', 'POST'])
+@quiz.route('/category_edit/<string:p_id>', methods=['GET', 'POST'])
 @is_logged_in
 def category_edit(p_id):
     # Create cursor
-    global conn
     try:
-        conn = sqlite3.connect("quiz.db")
+        conn_c = sqlite3.connect("quiz.db")
+        cur = conn_c.cursor()
+        t = [p_id]
+        # Get article by id
+        cur.execute("SELECT * FROM category WHERE id_category = ?", t)
+        category_e = cur.fetchone()
+        # Get form
+        form = CategoryForm(request.form)
+        # Populate category form fields
+        form.name.data = category_e[1]
+        form.explanation.data = category_e[2]
+        if request.method == 'POST':  # and form.validate():
+            name = request.form['name']
+            explanation = request.form['explanation']
+            print(explanation)
+            # Execute
+            cur.execute("UPDATE category SET name = ?, explanation = ? WHERE id_category = ?", (name, explanation, p_id))
+            # Commit to DB
+            conn_c.commit()
+            # Close connection
+            cur.close()
+            flash('Category updated', 'success')
+            return redirect(url_for('quiz.category'))
+        return render_template('category_edit.html', form=form)
     except Error as e:
         print(e)
-    cur = conn.cursor()
-
-    # Get article by id
-    category_e = cur.fetchone()
-    cur.close()
-    # Get form
-    form = CategoryForm(request.form)
-    # Populate category form fields
-    form.name.data = category_e[1]
-    form.explanation.data = category_e[2]
-    if request.method == 'POST':  # and form.validate():
-        name = request.form['name']
-        explanation = request.form['explanation']
-        print(explanation)
-        try:
-            conn = sqlite3.connect("quiz.db")
-        except Error as e:
-            print(e)
-        cur = conn.cursor()
-        # Execute
-        cur.execute("UPDATE category SET name = ?, explanation = ? WHERE id_category = ?", (name, explanation, p_id))
-        # Commit to DB
-        conn.commit()
-        # Close connection
-        cur.close()
-        flash('Category updated', 'success')
-        return redirect(url_for('category'))
-    return render_template('category_edit.html', form=form)
 
 
 # Delete Category

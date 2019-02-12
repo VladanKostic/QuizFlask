@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, validators
 from wtforms.validators import DataRequired
 from wtforms_alchemy.fields import QuerySelectField
-from app.models import Category, Question
+from quiz.models import Category, Question
 
 
 class CategoryForm(FlaskForm):
