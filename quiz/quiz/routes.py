@@ -171,14 +171,14 @@ def question_add():
 @is_logged_in
 def question_edit(q_id):
     # Create cursor
-    global conn
+    global conn_q
     try:
-        conn_c = sqlite3.connect("quiz.db")
-        cur = conn_c.cursor()
+        conn_q = sqlite3.connect("quiz.db", check_same_thread=False)
+        cur_q = conn_q.cursor()
         t = [q_id]
         # Get article by id
-        cur.execute("SELECT * FROM question WHERE id_question = ?", t)
-        question_e = cur.fetchone()
+        cur_q.execute("SELECT * FROM question WHERE id_question = ?", t)
+        question_e = cur_q.fetchone()
         # Get form
         form = QuestionForm(request.form)
         # Populate category form fields
@@ -190,16 +190,19 @@ def question_edit(q_id):
             question_text = request.form['question_text']
             num_question_in_game = request.form['num_question_in_game']
             # Execute
-            cur.execute(
+            cur_q.execute(
                 "UPDATE question SET id_category = ?, question_text = ?, num_question_in_game = ? WHERE id_question = ?",
                 (id_category, question_text, num_question_in_game, q_id))
             # Commit to DB
-            conn.commit()
+            conn_q.commit()
             # Close connection
-            cur.close()
+            cur_q.close()
             flash('Question updated', 'success')
             return redirect(url_for('quiz.question'))
+        # Close connection
+        cur_q.close()
         return render_template('question_edit.html', form=form)
+
     except Error as e:
         print(e)
 
